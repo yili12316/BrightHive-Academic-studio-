@@ -1,6 +1,7 @@
 (() => {
   const form = document.querySelector('#enrollment-form');
   const status = document.querySelector('#form-status');
+  const mailFallback = document.querySelector('#mail-fallback-link');
   const submit = form?.querySelector('[type="submit"]');
   const savedLanguage = localStorage.getItem('gsa-language');
   let language = savedLanguage === 'zh' ? 'zh' : 'en';
@@ -111,9 +112,35 @@
     status.dataset.state = state;
   }
 
+  function showMailFallback(payload) {
+    const label = (zh, en) => language === 'en' ? en : zh;
+    const lines = [
+      'BrightHive Academic Studio — Enrollment Application',
+      '',
+      `${label('家长姓名', 'Parent / guardian name')}: ${payload.parent_name}`,
+      `${label('家长邮箱', 'Parent email')}: ${payload.parent_email}`,
+      `${label('联系电话', 'Phone number')}: ${payload.parent_phone}`,
+      `${label('报名孩子人数', 'Number of children')}: ${payload.number_of_children}`,
+      ...payload.children.flatMap((child, index) => [
+        '',
+        `${label('孩子', 'Child')} ${index + 1}: ${child.name}`,
+        `${label('年级', 'Grade')}: ${child.grade}`,
+        `${label('小学', 'Elementary school')}: ${child.school}`,
+        `${label('放学时间', 'School dismissal time')}: ${child.dismissal_time}`
+      ]),
+      '',
+      `${label('希望开始时间', 'Preferred start')}: ${payload.preferred_start}`,
+      `${label('补充说明', 'Additional information')}: ${payload.message || '—'}`
+    ];
+    const subject = label('BrightHive Academic Studio 报名申请', 'BrightHive Academic Studio Enrollment Application');
+    mailFallback.href = `mailto:Brighthive168@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+    mailFallback.hidden = false;
+  }
+
   form?.addEventListener('submit', async event => {
     event.preventDefault();
     status.textContent = '';
+    if (mailFallback) mailFallback.hidden = true;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
     const children = Array.from(childrenContainer?.querySelectorAll('.child-entry') || []).map(card => ({
@@ -139,6 +166,7 @@
     }
     if (!window.supabase?.createClient || !window.GSA_SUPABASE?.url || !window.GSA_SUPABASE?.anonKey) {
       showStatus(language === 'en' ? 'The enrolment service is not connected yet. Please email Brighthive168@gmail.com.' : '报名服务尚未连接，请直接发送邮件至 Brighthive168@gmail.com。');
+      showMailFallback(payload);
       return;
     }
     const original = submit.innerHTML;
@@ -163,8 +191,9 @@
     } catch (error) {
       const message = error.message === 'SERVICE_NOT_CONFIGURED'
         ? (language === 'en' ? 'Online enrolment email is being set up. Please email Brighthive168@gmail.com for now.' : '在线报名邮件服务正在配置，请先发送邮件至 Brighthive168@gmail.com。')
-        : (language === 'en' ? 'We couldn’t send your enquiry. Please try again or email Brighthive168@gmail.com.' : '暂时未能发送，请重试，或直接发送邮件至 Brighthive168@gmail.com。');
+        : (language === 'en' ? 'We couldn’t send your enquiry automatically. Use the email link below to send your application to Brighthive168@gmail.com.' : '报名暂时未能自动发送，请点击下方邮件入口，将申请资料发送至 Brighthive168@gmail.com。');
       showStatus(message);
+      showMailFallback(payload);
     } finally {
       submit.disabled = false;
       submit.removeAttribute('aria-busy');

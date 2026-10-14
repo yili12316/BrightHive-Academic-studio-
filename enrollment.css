@@ -339,3 +339,4 @@ body{color:var(--ink);background:#fff;font-family:Arial,"Aptos","Segoe UI","Micr
 
 .site-footer .family-score-access{font-size:6px;line-height:1;color:rgba(255,255,255,.28);letter-spacing:.02em}.site-footer .family-score-access:hover,.site-footer .family-score-access:focus-visible{font-size:10px;color:#e7c66a;opacity:1}
 
+.mail-fallback-link{display:block;margin:0 0 14px;color:#17324f;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}.mail-fallback-link:hover{color:#b84d16}.mail-fallback-link[hidden]{display:none}
