@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Apply for BrightHive Academic Studio after-school academic programs in Eastvale, USA." data-content-zh="BrightHive Academic Studio 美国 Eastvale 地区课后学术课程报名。" data-content-en="Apply for BrightHive Academic Studio after-school academic programs in Eastvale, USA.">
+  <meta name="theme-color" content="#17324f">
+  <title data-zh="报名申请 | BrightHive Academic Studio Eastvale" data-en="Enrollment Application | BrightHive Academic Studio Eastvale">Enrollment Application | BrightHive Academic Studio Eastvale</title>
+  <link rel="icon" href="brighthive-logo.png?v=1">
+  <link rel="stylesheet" href="enrollment.css?v=20261013parent-entry">
+</head>
+<body class="apply-page">
+  <div class="utility-bar"><span data-zh="仅服务美国 Eastvale 地区" data-en="Serving Eastvale, USA only">仅服务美国 Eastvale 地区</span><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a></div>
+  <header class="site-nav">
+    <a class="wordmark" href="index.html" aria-label="BrightHive Academic Studio 首页"><img src="brighthive-logo.png?v=1" alt="BrightHive Academic Studio"><span><strong>BrightHive</strong><small>ACADEMIC STUDIO</small></span></a>
+    <nav aria-label="主导航"><a href="index.html" data-zh="招生首页" data-en="Admissions home">招生首页</a><a href="../index.html" data-zh="家长中心" data-en="Family portal">家长中心</a></nav>
+    <button class="language-toggle" type="button" data-language-toggle aria-label="Switch language">English</button>
+  </header>
+  <main class="apply-main">
+    <section class="apply-intro"><p class="eyebrow"><span></span><b data-zh="EASTVALE · 半天放学后 · 一至六年级" data-en="EASTVALE · HALF-DAY AFTER SCHOOL · GRADES 1–6">EASTVALE · 半天放学后 · 一至六年级</b></p><h1 data-zh="报名申请" data-en="Enrolment enquiry">报名申请</h1><p data-zh="本课后班提供半天放学后托管与中文学习，仅招收一至六年级学生，不招收 TK、幼儿园、初中或高中学生。请填写以下信息，BrightHive Academic Studio 招生团队会通过您提供的联系方式跟进。" data-en="This program offers half-day after-school care and Chinese learning for students in Grades 1–6 only. TK, kindergarten, middle, and high school students are not eligible. Complete the details below and the BrightHive Academic Studio admissions team will follow up.">本课后班提供半天放学后托管与中文学习，仅招收一至六年级学生，不招收 TK、幼儿园、初中或高中学生。请填写以下信息，BrightHive Academic Studio 招生团队会通过您提供的联系方式跟进。</p></section>
+    <form class="enrollment-form apply-form" id="enrollment-form" novalidate>
+      <div class="form-heading"><span data-zh="01 — 家长联系信息" data-en="01 — PARENT / GUARDIAN">01 — 家长联系信息</span><small data-zh="必填项以 * 标记" data-en="Required fields are marked *">必填项以 * 标记</small></div>
+      <div class="form-grid">
+        <label><span data-zh="家长姓名 *" data-en="Parent / guardian name *">家长姓名 *</span><input name="parent_name" autocomplete="name" maxlength="80" required data-ph-zh="请输入家长姓名" data-ph-en="Enter your name"></label>
+        <label><span data-zh="电子邮箱 *" data-en="Email address *">电子邮箱 *</span><input name="parent_email" type="email" autocomplete="email" maxlength="254" required data-ph-zh="用于招生团队联系您" data-ph-en="For admissions follow-up"></label>
+        <label class="full-field"><span data-zh="联系电话 *" data-en="Phone number *">联系电话 *</span><input name="parent_phone" type="tel" autocomplete="tel" maxlength="40" required data-ph-zh="请输入方便联系的号码" data-ph-en="A number we can reach you at"></label>
+      </div>
+      <div class="form-heading section-divider"><span data-zh="02 — 学生信息" data-en="02 — CHILDREN">02 — 学生信息</span><small data-zh="请为每位孩子填写信息" data-en="Enter details for each child">请为每位孩子填写信息</small></div>
+      <div class="form-grid child-count-grid"><label><span data-zh="报名孩子人数 *" data-en="Number of children *">报名孩子人数 *</span><select id="number-of-children" name="number_of_children" required><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></label></div>
+      <div class="children-container" id="children-container" aria-live="polite"></div>
+      <div class="form-grid"><label class="full-field"><span data-zh="补充说明（选填）" data-en="Additional information (optional)">补充说明（选填）</span><textarea name="message" maxlength="1200" rows="5" data-ph-zh="可填写家庭学习需求或方便联系的时间。" data-ph-en="Share family learning needs or a convenient time to reach you."></textarea></label></div>
+      <label class="consent-field"><input type="checkbox" name="consent" required><span data-zh="我同意 BrightHive Academic Studio 为回复本次报名申请，使用我填写的联系信息与学习需求。" data-en="I agree that BrightHive Academic Studio may use my contact details and learning information to respond to this enquiry.">我同意 BrightHive Academic Studio 为回复本次报名申请，使用我填写的联系信息与学习需求。</span></label>
+      <label class="website-field" aria-hidden="true">Website<input name="company_website" tabindex="-1" autocomplete="off"></label>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      <button class="button button-primary submit-button" type="submit"><span data-zh="提交报名申请" data-en="Submit enrolment enquiry">提交报名申请</span><b aria-hidden="true">↗</b></button>
+      <small class="form-footnote" data-zh="报名仅面向美国 Eastvale 地区家庭。" data-en="Enquiries are for families in Eastvale, USA only.">报名仅面向美国 Eastvale 地区家庭。</small>
+    </form>
+  </main>
+  <footer class="site-footer"><a class="footer-brand" href="index.html"><img src="brighthive-logo.png?v=1" alt=""><span>BrightHive Academic Studio</span></a><span data-zh="美国 Eastvale 地区课后学术学习" data-en="After-school academic learning in Eastvale, USA">After-school academic learning in Eastvale, USA</span><div><a href="privacy.html" data-zh="隐私政策" data-en="Privacy">Privacy</a><a href="terms.html" data-zh="使用条款" data-en="Terms">Terms</a><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a><a class="family-score-access" href="../index.html#progress" aria-label="Family score portal sign-in" data-aria-label-zh="家长成绩登录入口" data-aria-label-en="Family score portal sign-in" title="Email" data-title-zh="邮箱" data-title-en="Email" data-zh="邮箱" data-en="Email">Email</a></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="enrollment.js?v=20261013return-parents"></script>
+</body>
+</html>
+
+
