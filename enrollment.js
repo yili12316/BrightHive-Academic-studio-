@@ -1,7 +1,5 @@
 (() => {
   const form = document.querySelector('#enrollment-form');
-  const status = document.querySelector('#form-status');
-  const mailFallback = document.querySelector('#mail-fallback-link');
   const submit = form?.querySelector('[type="submit"]');
   const savedLanguage = localStorage.getItem('gsa-language');
   let language = savedLanguage === 'zh' ? 'zh' : 'en';
@@ -107,12 +105,7 @@
   renderChildren();
   redirectRegisteredParent();
 
-  function showStatus(message, state = 'error') {
-    status.textContent = message;
-    status.dataset.state = state;
-  }
-
-  function showMailFallback(payload) {
+  function buildEmailDraft(payload, method) {
     const label = (zh, en) => language === 'en' ? en : zh;
     const lines = [
       'BrightHive Academic Studio — Enrollment Application',
@@ -133,14 +126,21 @@
       `${label('补充说明', 'Additional information')}: ${payload.message || '—'}`
     ];
     const subject = label('BrightHive Academic Studio 报名申请', 'BrightHive Academic Studio Enrollment Application');
-    mailFallback.href = `mailto:Brighthive168@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
-    mailFallback.hidden = false;
+    const body = lines.join('\n');
+    const recipient = 'Brighthive168@gmail.com';
+    if (method === 'gmail') {
+      const params = new URLSearchParams({ view: 'cm', fs: '1', to: recipient, su: subject, body });
+      return `https://mail.google.com/mail/?${params}`;
+    }
+    if (method === 'outlook') {
+      const params = new URLSearchParams({ to: recipient, subject, body });
+      return `https://outlook.live.com/mail/0/deeplink/compose?${params}`;
+    }
+    return `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
-  form?.addEventListener('submit', async event => {
+  form?.addEventListener('submit', event => {
     event.preventDefault();
-    status.textContent = '';
-    if (mailFallback) mailFallback.hidden = true;
     if (!form.reportValidity()) return;
     const data = new FormData(form);
     const children = Array.from(childrenContainer?.querySelectorAll('.child-entry') || []).map(card => ({
@@ -160,45 +160,8 @@
       consent: data.get('consent') === 'on',
       company_website: String(data.get('company_website') || '')
     };
-    if (!payload.consent) {
-      showStatus(language === 'en' ? 'Please agree to the information-use notice.' : '请先勾选信息使用说明。');
-      return;
-    }
-    if (!window.supabase?.createClient || !window.GSA_SUPABASE?.url || !window.GSA_SUPABASE?.anonKey) {
-      showStatus(language === 'en' ? 'The enrolment service is not connected yet. Please email Brighthive168@gmail.com.' : '报名服务尚未连接，请直接发送邮件至 Brighthive168@gmail.com。');
-      showMailFallback(payload);
-      return;
-    }
-    const original = submit.innerHTML;
-    submit.disabled = true;
-    submit.setAttribute('aria-busy', 'true');
-    submit.innerHTML = `<span>${language === 'en' ? 'Sending…' : '正在发送…'}</span><b aria-hidden="true">…</b>`;
-    try {
-      const client = window.supabase.createClient(window.GSA_SUPABASE.url, window.GSA_SUPABASE.anonKey);
-      const { data: result, error } = await client.functions.invoke('enrollment-request', { body: payload });
-      if (error || !result?.ok) {
-        const reason = result?.error || error?.message || '';
-        if (/not configured|RESEND_API_KEY/i.test(reason)) throw new Error('SERVICE_NOT_CONFIGURED');
-        throw new Error('SEND_FAILED');
-      }
-      form.reset();
-      savedChildValues = [];
-      childrenContainer.innerHTML = '';
-      renderChildren();
-      showStatus(language === 'en' ? 'Your enquiry has been sent. Taking you to the BrightHive Academic Studio family portal…' : '报名咨询已发送。正在前往 BrightHive Academic Studio 家长中心…', 'success');
-      status.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      window.setTimeout(() => window.location.assign('../index.html?enrollment=sent'), 1800);
-    } catch (error) {
-      const message = error.message === 'SERVICE_NOT_CONFIGURED'
-        ? (language === 'en' ? 'Online enrolment email is being set up. Please email Brighthive168@gmail.com for now.' : '在线报名邮件服务正在配置，请先发送邮件至 Brighthive168@gmail.com。')
-        : (language === 'en' ? 'We couldn’t send your enquiry automatically. Use the email link below to send your application to Brighthive168@gmail.com.' : '报名暂时未能自动发送，请点击下方邮件入口，将申请资料发送至 Brighthive168@gmail.com。');
-      showStatus(message);
-      showMailFallback(payload);
-    } finally {
-      submit.disabled = false;
-      submit.removeAttribute('aria-busy');
-      submit.innerHTML = original;
-    }
+    const method = String(data.get('email_method') || 'default');
+    window.location.href = buildEmailDraft(payload, method);
   });
 })();
 
