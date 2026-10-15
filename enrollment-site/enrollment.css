@@ -743,3 +743,7 @@ body:not(.apply-page) .value-card:hover,body:not(.apply-page) .program-card:hove
 .apply-page .apply-process,.apply-page .apply-details,.apply-page .apply-price,.apply-page .apply-form,.apply-page .child-entry{border-radius:22px!important;box-shadow:0 6px 0 #302b4816,0 14px 28px #302b4810}
 .apply-page .apply-form{box-shadow:0 7px 0 #7652ad35,0 18px 38px #302b4814}
 .apply-page .apply-process,.apply-page .apply-details{overflow:hidden}
+.site-nav{min-height:92px;height:auto}
+.wordmark img{width:66px;height:66px;object-fit:contain;image-rendering:auto;-webkit-backface-visibility:hidden}
+.footer-brand img{width:42px;height:42px;image-rendering:auto}
+@media(max-width:760px){.site-nav{min-height:74px}.wordmark img{width:56px;height:56px}.footer-brand img{width:36px;height:36px}}
