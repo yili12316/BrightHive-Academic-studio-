@@ -107,3 +107,12 @@ header{background:#fffdf9df;border-bottom-color:#eee4e8;box-shadow:0 5px 24px #6
 
 /* Keep all supplied brand and navigation icon artwork unchanged */
 .brand-image,.teacher-logo img,.teacher-access-card>img,.policy-logo,.home-menu-item>.menu-icon-image img,.update-illustration img{filter:none!important}
+
+.family-score-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0 20px}.family-score-summary article{display:flex;flex-direction:column;gap:7px;padding:18px;border:1px solid #ead8f2;border-radius:16px;background:linear-gradient(135deg,#fff8fc,#fffdf5)}.family-score-summary small{color:#796a7f;font-size:11px;font-weight:800}.family-score-summary strong{color:#6f2c7c;font-size:28px}.family-score-summary span{color:#807685;font-size:11px}.score-up{color:#249666}.score-down{color:#d27c34}@media(max-width:580px){.family-score-summary{grid-template-columns:1fr}}
+/* Family portal is focused on scores; keep the enrollment report easy to find. */
+.pre-enrollment-report{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 20px;border:1px solid #e5e8ec;border-left:3px solid #b84d16;background:#fff}
+.pre-enrollment-report>div{display:flex;flex-direction:column;gap:5px}
+.pre-enrollment-report strong{color:#17324f;font-size:13px}
+.pre-enrollment-report small{color:#667482;font-size:11px}
+.pre-enrollment-report .text-button{flex:none}
+@media(max-width:600px){.pre-enrollment-report{align-items:flex-start;flex-direction:column;gap:12px;padding:16px}.pre-enrollment-report .text-button{min-height:38px}}

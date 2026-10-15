@@ -1,0 +1,42 @@
+BrightHive Academic Studio 完整网站 · Supabase 正式数据版
+
+账号
+- 仅使用 Google 登录。
+- 首次登录后选择“家长账号”或“教师账号”。
+- 家长使用课后班提供的家长邀请码，教师使用单独的私密教师邀请码。
+- 不包含测试账号、测试学生、测试成绩、测试账单或测试数据。
+
+教师管理中心
+- 学生档案、家长账号关联、课程和分班
+- 作业发布与学生完成状态
+- 测评、成绩和老师评语
+- 费用账单、到期日和状态
+- 课后班动态
+- 每一类内容都可新增、更新对应状态或删除
+
+安全
+- 教师邀请码只在 Supabase 数据库中验证，前端文件不保存明文。
+- 教师身份由 staff_users 和 Row Level Security 双重检查。
+- 家长只能看到与自己关联学生的数据。
+- supabase-config.js 只包含公开 publishable/anon key；Google Client Secret 只保存在 Supabase。
+
+文件
+- index.html / app.js：登录和家长门户
+- teacher.html / teacher.js / teacher.css：教师管理中心
+- style.css / auth.css：电脑和手机响应式样式
+- supabase-schema.sql：数据库结构、函数和权限
+- SUPABASE_SETUP.md：维护和部署说明
+
+本地打开
+请双击 outputs 文件夹中的“启动网站.bat”访问，不要直接双击 index.html。启动器会先确认网页有响应，再打开浏览器；端口被占用时会自动换可用端口。
+
+Google 登录
+- 必须从 http://127.0.0.1 地址打开，file:/// 本地文件不能完成 Google 登录回跳。
+- Supabase Dashboard > Authentication > URL Configuration 的 Redirect URLs 要允许启动器使用的本地地址。可添加 http://127.0.0.1:7892/**；如果启动器显示了备用端口，可添加 http://127.0.0.1:*/**。
+- Google Cloud 中的授权重定向 URI 应为 https://hkbkkuwtcyvsmzvkfyeq.supabase.co/auth/v1/callback。
+
+报名网站：enrollment-site/index.html。家长课后班中心：index.html。邮件通知部署说明：ENROLLMENT_SETUP.md。报名邮件通过 Supabase Edge Function 发送到招生邮箱；部署前必须配置 Resend 发件服务密钥。
+
+报名网站：enrollment-site/index.html。家长课后班中心：index.html。邮件通知部署说明：ENROLLMENT_SETUP.md。报名邮件通过 Supabase Edge Function 发送到招生邮箱；部署前必须配置 Resend 发件服务密钥。
+
+

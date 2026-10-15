@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="BrightHive Academic Studio 教师管理中心">
+  <title>BrightHive Academic Studio · 教师管理中心</title>
+  <link rel="icon" href="brighthive-logo.png?v=1">
+  <link rel="stylesheet" href="style.css?v=20261012al">
+  <link rel="stylesheet" href="teacher.css?v=20261013score-edit">
+</head>
+<body class="teacher-body">
+  <div id="teacher-loading" class="teacher-loading"><span class="loader"></span><strong>正在验证教师账号…</strong></div>
+  <section id="teacher-access" class="teacher-access" hidden>
+    <form id="teacher-access-form" class="teacher-access-card">
+      <img src="brighthive-logo.png?v=1" alt="BrightHive Academic Studio">
+      <span>TEACHER PORTAL</span>
+      <h1>进入教师管理中心</h1>
+      <p>输入课后班教师邀请码。邀请码正确后，这个 Google 账号会立即成为教师账号。</p>
+      <label>教师邀请码<input id="teacher-invite-code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="请输入教师邀请码" required></label>
+      <p id="teacher-access-error" class="teacher-access-error" role="alert"></p>
+      <button class="teacher-submit" type="submit">验证并进入</button>
+      <a href="index.html">返回家长中心</a>
+    </form>
+  </section>
+  <div id="teacher-app" hidden>
+    <header class="teacher-topbar">
+      <a href="teacher.html" class="teacher-logo"><img src="brighthive-logo.png?v=1" alt="BrightHive Academic Studio"></a>
+      <div><span>TEACHER PORTAL</span><strong>教师管理中心</strong></div>
+      <button class="language-toggle" id="teacher-language" type="button">English</button>
+      <button class="teacher-signout" id="teacher-signout" type="button">退出登录</button>
+    </header>
+    <div class="teacher-layout">
+      <aside class="teacher-nav" aria-label="教师管理导航">
+        <button class="active" data-teacher-view="data"><i>☺</i><span>学生与账号<small>Students</small></span></button>
+        <button data-teacher-view="progress"><i>↗</i><span>成绩与进步<small>Progress</small></span></button>
+        <button data-teacher-view="homework"><i>✓</i><span>作业<small>Homework</small></span></button>
+        <button data-teacher-view="attendance"><i>◷</i><span>出勤与课程<small>Attendance</small></span></button>
+        <button data-teacher-view="fees"><i>$</i><span>费用账单<small>Fees</small></span></button>
+        <button data-teacher-view="reports"><i>◎</i><span>月度学习报告<small>Monthly Report</small></span></button>
+        <button data-teacher-view="updates"><i>✦</i><span>课后班动态<small>Updates</small></span></button>
+      </aside>
+      <main class="teacher-main">
+        <div class="teacher-heading"><div><div class="eyebrow">BrightHive Academic Studio</div><h1 id="teacher-title">数据表</h1><p id="teacher-subtitle">管理学生资料，并发布和维护学习成绩。</p></div><div class="teacher-user"><span class="avatar" id="teacher-initials">T</span><div><strong id="teacher-name">Teacher</strong><small>已验证教师账号</small></div></div></div>
+        <div id="teacher-content"></div>
+      </main>
+    </div>
+  </div>
+  <div id="teacher-toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="teacher.js?v=20261013score-edit"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
