@@ -33,7 +33,7 @@ try {
     if (Test-Path -LiteralPath $stdoutPath) {
       $match = Select-String -LiteralPath $stdoutPath -Pattern 'http://127\.0\.0\.1:(\d+)/' | Select-Object -First 1
       if ($match) {
-        $url = $match.Matches[0].Value.TrimEnd('/') + '/index.html'
+        $url = $match.Matches[0].Value.TrimEnd('/') + '/enrollment-site/index.html'
         break
       }
     }
