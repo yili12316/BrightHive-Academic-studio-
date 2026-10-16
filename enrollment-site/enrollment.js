@@ -87,6 +87,33 @@
   translate(language);
   renderChildren();
 
+  function initScrollReveal() {
+    const revealTargets = document.querySelectorAll([
+      '.hero-copy', '.hero-art', '.hero-footnote', '.section-heading',
+      '.value-card', '.program-card', '.pricing-card', '.pricing-apply',
+      '.steps-visual', '.steps-list article', '.site-footer'
+    ].join(','));
+    if (document.body.classList.contains('apply-page') || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
+
+    revealTargets.forEach(element => {
+      const siblings = [...element.parentElement.children].filter(sibling => sibling.matches('.value-card,.program-card,.pricing-card,.steps-list article'));
+      const index = Math.max(0, siblings.indexOf(element));
+      element.style.setProperty('--reveal-delay', `${Math.min(index * 90, 270)}ms`);
+      element.classList.add('scroll-reveal');
+      revealObserver.observe(element);
+    });
+  }
+
+  initScrollReveal();
+
   function buildEmailDraft(payload, method) {
     const label = (zh, en) => language === 'en' ? en : zh;
     const lines = [
@@ -146,6 +173,7 @@
     window.location.href = buildEmailDraft(payload, method);
   });
 })();
+
 
 
 

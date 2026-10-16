@@ -747,3 +747,9 @@ body:not(.apply-page) .value-card:hover,body:not(.apply-page) .program-card:hove
 .wordmark img{width:66px;height:66px;object-fit:contain;image-rendering:auto;-webkit-backface-visibility:hidden}
 .footer-brand img{width:42px;height:42px;image-rendering:auto}
 @media(max-width:760px){.site-nav{min-height:74px}.wordmark img{width:56px;height:56px}.footer-brand img{width:36px;height:36px}}
+
+/* Gentle scroll entrances for the public enrollment homepage. */
+body:not(.apply-page) .scroll-reveal{opacity:0;translate:0 24px;transition:opacity .62s ease,translate .72s cubic-bezier(.2,.7,.2,1);transition-delay:var(--reveal-delay,0ms);will-change:opacity,translate}
+body:not(.apply-page) .scroll-reveal.is-visible{opacity:1;translate:0 0}
+@media(prefers-reduced-motion:reduce){body:not(.apply-page) .scroll-reveal,body:not(.apply-page) .scroll-reveal.is-visible{opacity:1;translate:none;transition:none;will-change:auto}}
+
