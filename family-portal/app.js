@@ -1,9 +1,13 @@
 const pages = [
+  ['home', '⌂', 'Overview', '主页', 'menu-data.png?v=3'],
+  ['classes', '▣', 'Classes', '学习课程', 'menu-grades.png?v=3'],
   ['progress', '↗', 'Progress', '成绩与进步', 'menu-assessments.png?v=3'],
-  ['homework', '✓', 'Homework', '作业', 'menu-homework.png?v=3'],
-  ['attendance', '◷', 'Attendance & Classes', '出勤与课程', 'menu-data.png?v=3'],
-  ['tuition', '▤', 'Fees', '费用账单', 'menu-fees.png?v=3'],
-  ['updates', '✦', 'Updates', '课后班动态', 'menu-updates.png?v=3']
+  ['exams', '▤', 'Assessment history', '测评记录', 'menu-grades.png?v=3'],
+  ['homework', '✎', 'Homework', '作业', 'menu-homework.png?v=3'],
+  ['attendance', '✓', 'Attendance', '出勤记录', 'menu-data.png?v=3'],
+  ['schedule', '▦', 'Schedule', '课程安排', 'menu-assessments.png?v=3'],
+  ['tuition', '$', 'Fees', '费用账单', 'menu-fees.png?v=3'],
+  ['updates', '✦', 'Academy updates', '课后班动态', 'menu-updates.png?v=3']
 ];
 
 const $ = selector => document.querySelector(selector);
@@ -74,9 +78,13 @@ const pageSubtitles = {
   home: tr('陪伴每一步成长，开启美好的学习一天。', 'Supporting every step toward a brighter day of learning.'),
   progress: tr('按科目查看上次与本次成绩、历史最高成绩、满分率和历次测评。', 'Compare previous and current scores by subject, highest score, perfect-score rate, and assessment history.'),
   updates: tr('查看老师发布的课堂活动、学习花絮和课后班动态。', 'See classroom activities, learning moments, and academy news.'),
+  classes: tr('查看已加入的学习科目、老师和课程安排。', 'Review enrolled subjects, teachers, and course details.'),
   homework: tr('查看老师发布的作业、截止日期和最后更新时间。', 'Review assignments, due dates, and the latest teacher updates.'),
+  exams: tr('查看历次测评成绩和老师发布的学习评语。', 'Review assessment history and teacher feedback.'),
+  schedule: tr('查看课后班发布的每周课程安排。', 'Review the weekly schedule published by the academy.'),
   attendance: tr('查看每天到校、离校、请假和缺席记录以及课程时间。', 'Review daily attendance, check-in, check-out, and class times.'),
-  tuition: tr('查看费用账单、到期日期和缴费状态。', 'Review fees, due dates, and payment status.')
+  tuition: tr('查看费用账单、到期日期和缴费状态。', 'Review fees, due dates, and payment status.'),
+  search: tr('搜索课后班已发布的课程、作业、成绩、动态和账单。', 'Search academy classes, homework, scores, updates, and invoices.')
 };
 
 function applyLanguageUI() {
@@ -125,8 +133,7 @@ function applyLanguageUI() {
   if (searchKey) searchKey.textContent = tr('搜索', 'Search');
   const secure = $('.secure-badge');
   if (secure) secure.textContent = tr('● 已安全登录', '● Securely signed in');
-  const back = $('.back-home');
-  if (back) back.textContent = tr('← 返回主页', '← Back to home');
+  document.querySelectorAll('.back-home').forEach(back => { back.textContent = tr('← 返回主页', '← Back to home'); });
   const modal = $('#profile-modal');
   if (modal) {
     modal.querySelector('h2').textContent = tr('账号设置', 'Account settings');
@@ -205,7 +212,7 @@ function emptyData() {
     students: [], classes: [], enrollments: [], schedules: [],
     exams: [], examResults: [], teacherComments: [], invoices: [],
     homeworkRecords: [], attendance: [], monthlyReports: [], scoreTrend: [],
-    academyUpdates: []
+    academyUpdates: [], familyRegistration: null
   };
 }
 
@@ -322,8 +329,12 @@ async function loadPortalData() {
     data.students = students || [];
   }
 
-  const { data: savedState, error: stateError } = await sb.from('parent_state').select('selected_student_id').eq('user_id', currentUser.id).maybeSingle();
-  if (stateError) throw new Error(stateError.message);
+  const [{ data: savedState, error: stateError }, { data: familyRegistration, error: registrationError }] = await Promise.all([
+    sb.from('parent_state').select('selected_student_id').eq('user_id', currentUser.id).maybeSingle(),
+    sb.from('family_registrations').select('children,created_at').eq('parent_id', currentUser.id).maybeSingle()
+  ]);
+  if (stateError || registrationError) throw new Error(stateError?.message || registrationError?.message);
+  data.familyRegistration = familyRegistration || null;
   selectedStudentId = data.students.some(student => student.id === savedState?.selected_student_id)
     ? savedState.selected_student_id
     : data.students[0]?.id || null;
@@ -416,7 +427,7 @@ function renderNav(page) {
 function homeMenu() {
   return `<section class="home-menu" aria-label="${tr('主页功能导航','Home navigation')}">
     <div class="home-menu-head"><div><span>EXPLORE</span><h2>${tr('功能导航','Explore')}</h2></div><p>${tr('选择你要查看的内容','Choose what you would like to view')}</p></div>
-    <div class="home-menu-grid">${pages.map((item, index) => `<a href="#${item[0]}" class="home-menu-item home-menu-${index + 1}">
+    <div class="home-menu-grid">${pages.filter(item => item[0] !== 'home').map((item, index) => `<a href="#${item[0]}" class="home-menu-item home-menu-${index + 1}">
       <b class="menu-icon-image"><img src="${item[4]}" alt="" aria-hidden="true"></b><span><strong>${item[2]}</strong><small>${isEnglish ? pageSubtitles[item[0]] : item[3]}</small></span><em>›</em>
     </a>`).join('')}</div>
   </section>`;
@@ -444,6 +455,18 @@ function homeworkPage() {
     <div class="homework-result-grid"><div><small>${tr('成绩','Grade')}</small><strong>${esc(item.grade || '—')}</strong></div><div><small>${tr('答对','Correct')}</small><strong>${item.correct_count ?? '—'}</strong></div><div><small>${tr('答错','Wrong')}</small><strong>${item.wrong_count ?? '—'}</strong></div></div>
     <div class="homework-dates"><div><small>${tr('作业日期','Homework date')}</small><strong>${fmtDate(item.assigned_on)}</strong></div><div><small>${tr('最后更新','Last updated')}</small><strong>${fmtDateTime(item.updated_at)}</strong></div></div>
   </article>`; }).join('')}</div>`;
+}
+
+function classesPage() {
+  if (!currentStudent()) return emptyState('尚未关联学生', '关联学生后即可查看已加入的课程。');
+  if (!data.classes.length) return emptyState(tr('暂无课程','No classes yet'), tr('课后班尚未为该学生安排课程。','The academy has not assigned classes to this student yet.'), '▣');
+  return `<section class="courses">${data.classes.map((course, index) => {
+    const schedule = data.schedules.filter(item => item.class_id === course.id).sort((a,b) => a.weekday - b.weekday || String(a.start_time).localeCompare(String(b.start_time)));
+    const times = schedule.length
+      ? schedule.map(item => `${weekdays[item.weekday - 1] || ''} ${fmtTime(item.start_time)}–${fmtTime(item.end_time)}`).join(' · ')
+      : tr('课后班尚未发布时间','Schedule not published yet');
+    return `<article class="card course course-tone-${index % 4 + 1}"><div class="course-top"><span>${['📖','✏️','🔎','✦'][index % 4]}</span><strong>${esc(course.subject || tr('学习课程','Class'))}</strong></div><h3>${esc(course.title || course.subject || tr('学习课程','Class'))}</h3><p>${tr('老师','Teacher')}：${esc(course.teacher_name || '—')}</p><p>${tr('教室','Room')}：${esc(course.room || '—')}</p><p>${esc(times)}</p></article>`;
+  }).join('')}</section>`;
 }
 
 function homePage() {
@@ -527,6 +550,10 @@ function examsPage() {
 
 function progressPage() {
   if (!currentStudent()) return emptyState('尚未关联学生', '关联学生后即可查看成绩变化。');
+  const familyChild = data.familyRegistration?.children?.find(child => child.student_id === selectedStudentId);
+  const preEnrollmentReport = familyChild?.exam_report_path
+    ? card(tr('入班前成绩资料','Pre-enrollment score report'), `<div class="pre-enrollment-report"><div><strong>${tr('报名时上传的成绩单','Score report uploaded during registration')}</strong><small>${tr('资料登记日期','File received')} · ${fmtDate(data.familyRegistration.created_at)}</small></div><button class="text-button" type="button" data-family-score-report="${esc(familyChild.exam_report_path)}">${tr('查看成绩单','View report')} ↗</button></div>`)
+    : card(tr('入班前成绩资料','Pre-enrollment score report'), `<div class="compact-empty">${tr('该学生暂未上传入班前成绩单。','No pre-enrollment score report was uploaded for this student.')}</div>`);
   const comparisons = subjectComparisons();
   const scored = [...data.examResults].filter(result => examForResult(result) && result.score != null && result.score !== '' && Number(examForResult(result)?.max_score) > 0).sort((a,b)=>new Date(examForResult(b).exam_date)-new Date(examForResult(a).exam_date));
   const best = [...scored].sort((a,b)=>normalizedScore(b)-normalizedScore(a))[0];
@@ -537,7 +564,7 @@ function progressPage() {
   const scoreSummary = `<section class="family-score-summary"><article><small>${tr('历史最高成绩','Highest score to date')}</small><strong>${best ? `${normalizedScore(best)}%` : '—'}</strong><span>${best ? `${esc(bestSubject)} · ${esc(best.score)} / ${esc(bestExam.max_score)} · ${fmtDate(bestExam.exam_date)}` : tr('老师发布成绩后显示','Shown after a score is published')}</span></article><article><small>${tr('满分率','Perfect-score rate')}</small><strong>${perfectRate == null ? '—' : `${perfectRate}%`}</strong><span>${scored.length ? `${perfectCount} / ${scored.length} ${tr('次测评满分','assessments at full marks')}` : tr('暂无已评分测评','No graded assessments yet')}</span></article></section>`;
   const historyRows = scored.length ? scored.map(result=>{const exam=examForResult(result),course=classById(exam.class_id);return `<tr><td>${fmtDate(exam.exam_date)}</td><td>${esc(exam.subject||course?.subject||'—')}</td><td>${esc(exam.title)}</td><td><strong>${esc(result.score)} / ${esc(exam.max_score)}</strong> (${normalizedScore(result)}%)</td><td>${esc(result.teacher_comment||'—')}</td></tr>`}).join('') : `<tr><td colspan="5">${tr('暂无测评记录','No assessment records yet')}</td></tr>`;
   const history = card(tr('历次测评成绩','Assessment history'), `<div class="table-wrap"><table><thead><tr><th>${tr('日期','Date')}</th><th>${tr('科目','Subject')}</th><th>${tr('测评','Assessment')}</th><th>${tr('成绩','Score')}</th><th>${tr('老师评语','Teacher comment')}</th></tr></thead><tbody>${historyRows}</tbody></table></div>`);
-  return `<section class="progress-intro"><span>${tr('按科目对比','SUBJECT BY SUBJECT')}</span><h2>${tr('学习进步看得见','See learning progress clearly')}</h2><p>${tr('老师发布成绩后，这里显示上次与本次成绩、历史最高成绩和满分率。','After a teacher publishes a score, see the previous and current results, highest score, and perfect-score rate here.')}</p></section>${scoreSummary}${comparisonCards(comparisons)}${history}`;
+  return `<section class="progress-intro"><span>${tr('成绩与进步','SCORES & PROGRESS')}</span><h2>${tr('学习进步看得见','See learning progress clearly')}</h2><p>${tr('在这里查看入班前成绩资料、老师发布的成绩对比、历史最高成绩、满分率与历次测评记录。','Review the pre-enrollment report, teacher-published score comparisons, highest score, perfect-score rate, and assessment history.')}</p></section>${preEnrollmentReport}${scoreSummary}${comparisonCards(comparisons)}${history}`;
 }
 
 function attendancePage() {
@@ -550,7 +577,7 @@ function attendancePage() {
   const rate = month.length?Math.round(present/month.length*100):null;
   const labels = {present:tr('到课','Present'),absent:tr('缺席','Absent'),excused:tr('请假','Excused')};
   const rows = data.attendance.length ? `<div class="table-wrap"><table><thead><tr><th>${tr('日期','Date')}</th><th>${tr('状态','Status')}</th><th>${tr('到校','Check-in')}</th><th>${tr('离校','Check-out')}</th><th>${tr('老师备注','Teacher note')}</th><th>${tr('最后更新','Updated')}</th></tr></thead><tbody>${data.attendance.map(item=>`<tr><td>${fmtDate(item.attendance_date)}</td><td>${pill(labels[item.status]||item.status,item.status==='present'?'green':item.status==='absent'?'orange':'blue')}</td><td>${fmtTime(item.check_in)}</td><td>${fmtTime(item.check_out)}</td><td>${esc(item.note||'—')}</td><td>${fmtDateTime(item.updated_at)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="compact-empty">${tr('暂无出勤记录','No attendance records yet')}</div>`;
-  return `<div class="stats attendance-stats"><div class="stat"><label>${tr('本月出勤率','Monthly attendance')}</label><strong>${rate==null?'—':rate+'%'}</strong><small>${month.length} ${tr('个记录日','recorded days')}</small></div><div class="stat"><label>${tr('到课','Present')}</label><strong>${present}</strong><small>${tr('天','days')}</small></div><div class="stat"><label>${tr('请假','Excused')}</label><strong>${excused}</strong><small>${tr('天','days')}</small></div><div class="stat"><label>${tr('缺席','Absent')}</label><strong>${absent}</strong><small>${tr('天','days')}</small></div></div>${card(tr('每日出勤记录','Daily attendance'),rows)}<div style="margin-top:22px">${schedulePage()}</div>`;
+  return `<div class="stats attendance-stats"><div class="stat"><label>${tr('本月出勤率','Monthly attendance')}</label><strong>${rate==null?'—':rate+'%'}</strong><small>${month.length} ${tr('个记录日','recorded days')}</small></div><div class="stat"><label>${tr('到课','Present')}</label><strong>${present}</strong><small>${tr('天','days')}</small></div><div class="stat"><label>${tr('请假','Excused')}</label><strong>${excused}</strong><small>${tr('天','days')}</small></div><div class="stat"><label>${tr('缺席','Absent')}</label><strong>${absent}</strong><small>${tr('天','days')}</small></div></div>${card(tr('每日出勤记录','Daily attendance'),rows)}`;
 }
 
 function tuitionPage() {
@@ -577,22 +604,28 @@ function searchPage() {
 function render() {
   if (!currentUser) return;
   let page = location.hash.slice(1) || 'home';
-  if (page === 'reports') { location.replace('#progress'); page = 'progress'; }
+  if (page === 'reports') page = 'exams';
   if (!pages.some(item => item[0] === page)) page = 'home';
+  const pageDefinition = pages.find(item => item[0] === page);
+  const renderedPage = query ? 'search' : page;
   document.body.dataset.page = page;
-  renderNav(page);
+  renderNav(query ? '' : page);
   renderChildren();
-  const firstName = String(currentUser.name || tr('家长','Parent')).trim().split(/\s+/)[0];
-  $('#page-title').textContent = query ? tr('搜索课后班数据','Search learning data') : page === 'home' ? tr(`您好，${firstName}`, `Hello, ${firstName}`) : pages.find(item => item[0] === page)[isEnglish ? 2 : 3];
-  $('#page-subtitle').textContent = query ? tr(`搜索 “${query}”`, `Searching for “${query}”`) : pageSubtitles[page];
-  $('#content').innerHTML = query ? searchPage() : ({
+  $('#page-title').textContent = query ? tr('搜索结果', 'Search results') : pageDefinition[isEnglish ? 2 : 3];
+  $('#page-subtitle').textContent = pageSubtitles[renderedPage] || '';
+  const pageRenderers = {
     home: homePage,
+    classes: classesPage,
     progress: progressPage,
+    exams: examsPage,
     homework: homeworkPage,
     attendance: attendancePage,
+    schedule: schedulePage,
     tuition: tuitionPage,
-    updates: updatesPage
-  })[page]();
+    updates: updatesPage,
+    search: searchPage
+  };
+  $('#content').innerHTML = pageRenderers[renderedPage]();
 }
 
 function updateUserUI() {
@@ -731,6 +764,20 @@ async function saveProfile() {
 document.addEventListener('click', async event => {
   const target = event.target.closest('button');
   if (!target) return;
+  if (target.dataset.familyScoreReport) {
+    const reportWindow = window.open('about:blank', '_blank');
+    try {
+      const { data: link, error } = await sb.storage.from('family-exam-results').createSignedUrl(target.dataset.familyScoreReport, 300);
+      if (error) throw error;
+      if (!link?.signedUrl) throw new Error('Secure score report link was not returned.');
+      if (reportWindow) reportWindow.location = link.signedUrl;
+      else window.location.href = link.signedUrl;
+    } catch (error) {
+      reportWindow?.close();
+      toast(tr('无法打开成绩单，请稍后重试。','Could not open the score report. Please try again.'));
+    }
+    return;
+  }
   if (target.hasAttribute('data-language-toggle')) {
     localStorage.setItem('gsa-language', isEnglish ? 'zh' : 'en');
     location.reload();
@@ -742,7 +789,8 @@ document.addEventListener('click', async event => {
     try {
       await Promise.all([loadSelectedStudentData(), saveSelectedStudent()]);
       query = '';
-      $('#search').value = '';
+      const search = $('#search');
+      if (search) search.value = '';
       render();
     } catch (error) {
       showError('无法切换学生，请稍后重试。');
@@ -763,7 +811,7 @@ document.addEventListener('keydown', event => {
   }
 });
 
-$('#search').addEventListener('input', event => {
+$('#search')?.addEventListener('input', event => {
   query = event.target.value.trim();
   render();
 });
@@ -928,6 +976,7 @@ if (new URLSearchParams(location.search).get('enrollment') === 'sent') {
   ));
   history.replaceState(null, '', location.pathname + location.hash);
 }
+
 
 
 
