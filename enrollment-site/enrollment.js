@@ -1,5 +1,6 @@
 (() => {
   const form = document.querySelector('#enrollment-form');
+  const artForm = document.querySelector('#art-registration-form');
   const submit = form?.querySelector('[type="submit"]');
   const savedLanguage = localStorage.getItem('gsa-language');
   let language = savedLanguage === 'zh' ? 'zh' : 'en';
@@ -90,7 +91,7 @@
   function initScrollReveal() {
     const revealTargets = document.querySelectorAll([
       '.hero-copy', '.hero-art', '.hero-footnote', '.section-heading',
-      '.value-card', '.program-card', '.pricing-card', '.pricing-apply',
+      '.value-card', '.program-card', '.pricing-card', '.pricing-apply', '.art-price-card', '.art-apply-link',
       '.steps-visual', '.steps-list article', '.site-footer'
     ].join(','));
     if (document.body.classList.contains('apply-page') || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
@@ -102,7 +103,7 @@
     }, { threshold: 0.12, rootMargin: '0px 0px -36px 0px' });
 
     revealTargets.forEach(element => {
-      const siblings = [...element.parentElement.children].filter(sibling => sibling.matches('.value-card,.program-card,.pricing-card,.steps-list article'));
+      const siblings = [...element.parentElement.children].filter(sibling => sibling.matches('.value-card,.program-card,.pricing-card,.art-price-card,.steps-list article'));
       const index = Math.max(0, siblings.indexOf(element));
       element.style.setProperty('--reveal-delay', `${Math.min(index * 90, 270)}ms`);
       element.classList.add('scroll-reveal');
@@ -111,6 +112,18 @@
   }
 
   initScrollReveal();
+
+  function composeEmailDraft(recipient, subject, body, method) {
+    if (method === 'gmail') {
+      const params = new URLSearchParams({ view: 'cm', fs: '1', to: recipient, su: subject, body });
+      return 'https://mail.google.com/mail/?' + params.toString();
+    }
+    if (method === 'outlook') {
+      const params = new URLSearchParams({ to: recipient, subject: subject, body: body });
+      return 'https://outlook.live.com/mail/0/deeplink/compose?' + params.toString();
+    }
+    return 'mailto:' + recipient + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
 
   function buildEmailDraft(payload, method) {
     const label = (zh, en) => language === 'en' ? en : zh;
@@ -134,16 +147,7 @@
     ];
     const subject = label('BrightHive Academic Studio 报名申请', 'BrightHive Academic Studio Enrollment Application');
     const body = lines.join('\n');
-    const recipient = 'Brighthive168@gmail.com';
-    if (method === 'gmail') {
-      const params = new URLSearchParams({ view: 'cm', fs: '1', to: recipient, su: subject, body });
-      return `https://mail.google.com/mail/?${params}`;
-    }
-    if (method === 'outlook') {
-      const params = new URLSearchParams({ to: recipient, subject, body });
-      return `https://outlook.live.com/mail/0/deeplink/compose?${params}`;
-    }
-    return `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return composeEmailDraft('Brighthive168@gmail.com', subject, body, method);
   }
 
   form?.addEventListener('submit', event => {
@@ -170,6 +174,38 @@
     const method = String(data.get('email_method') || 'default');
     window.location.href = buildEmailDraft(payload, method);
   });
+  artForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!artForm.reportValidity()) return;
+    const data = new FormData(artForm);
+    const isTwoHours = String(data.get('session_length')) === 'two_hours';
+    const label = (zh, en) => language === 'en' ? en : zh;
+    const duration = isTwoHours ? label('2 小时', '2 hours') : label('1 小时', '1 hour');
+    const price = isTwoHours ? '$30 total' : '$20';
+    const savings = isTwoHours
+      ? label('相比两节一小时课（$40），省 $10（25%）；平均每小时 $15。', 'Save $10 (25%) versus two one-hour classes ($40); the average is $15 per hour.')
+      : label('一小时课程价格为 $20。', 'The one-hour class is $20.');
+    const subject = label('BrightHive 美术课程报名申请', 'BrightHive Art Class Registration');
+    const body = [
+      'BrightHive Academic Studio',
+      label('美术课程报名申请', 'Art class registration'),
+      '',
+      label('家长姓名', 'Parent / guardian name') + ': ' + String(data.get('parent_name') || '').trim(),
+      label('家长邮箱', 'Parent email') + ': ' + String(data.get('parent_email') || '').trim(),
+      label('联系电话', 'Phone number') + ': ' + String(data.get('parent_phone') || '').trim(),
+      label('学生姓名', 'Student name') + ': ' + String(data.get('student_name') || '').trim(),
+      label('年级', 'Grade') + ': ' + String(data.get('grade') || '').trim(),
+      label('课时', 'Class length') + ': ' + duration,
+      label('费用', 'Price') + ': ' + price,
+      label('优惠说明', 'Savings') + ': ' + savings,
+      label('希望上课日期', 'Preferred class date') + ': ' + String(data.get('preferred_date') || '').trim(),
+      label('方便上课时间', 'Preferred time') + ': ' + String(data.get('preferred_time') || label('待沟通', 'To be discussed')),
+      label('补充说明', 'Additional notes') + ': ' + (String(data.get('message') || '').trim() || '—')
+    ].join('\n');
+    const method = String(data.get('email_method') || 'default');
+    window.location.href = composeEmailDraft('Brighthive168@gmail.com', subject, body, method);
+  });
+
 })();
 
 
