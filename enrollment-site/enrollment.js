@@ -113,41 +113,58 @@
 
   initScrollReveal();
 
-  function composeEmailDraft(recipient, subject, body, method) {
-    if (method === 'gmail') {
-      const params = new URLSearchParams({ view: 'cm', fs: '1', to: recipient, su: subject, body });
-      return 'https://mail.google.com/mail/?' + params.toString();
-    }
-    if (method === 'outlook') {
-      const params = new URLSearchParams({ to: recipient, subject: subject, body: body });
-      return 'https://outlook.live.com/mail/0/deeplink/compose?' + params.toString();
-    }
-    return 'mailto:' + recipient + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-  }
-
-  function buildEmailDraft(payload, method) {
+  async function saveApplication(formElement, payload, statusId) {
+    const status = document.getElementById(statusId);
+    const button = formElement.querySelector('[type="submit"]');
+    const buttonLabel = button?.querySelector('span');
+    const config = window.GSA_SUPABASE;
     const label = (zh, en) => language === 'en' ? en : zh;
-    const lines = [
-      'BrightHive Academic Studio — Enrollment Application',
-      '',
-      `${label('家长姓名', 'Parent / guardian name')}: ${payload.parent_name}`,
-      `${label('家长邮箱', 'Parent email')}: ${payload.parent_email}`,
-      `${label('联系电话', 'Phone number')}: ${payload.parent_phone}`,
-      `${label('报名孩子人数', 'Number of children')}: ${payload.number_of_children}`,
-      ...payload.children.flatMap((child, index) => [
-        '',
-        `${label('孩子', 'Child')} ${index + 1}: ${child.name}`,
-        `${label('年级', 'Grade')}: ${child.grade}`,
-        `${label('小学', 'Elementary school')}: ${child.school}`,
-        `${label('放学时间', 'School dismissal time')}: ${child.dismissal_time}`
-      ]),
-      '',
-      `${label('希望开始时间', 'Preferred start')}: ${payload.preferred_start}`,
-      `${label('补充说明', 'Additional information')}: ${payload.message || '—'}`
-    ];
-    const subject = label('BrightHive Academic Studio 报名申请', 'BrightHive Academic Studio Enrollment Application');
-    const body = lines.join('\n');
-    return composeEmailDraft('Brighthive168@gmail.com', subject, body, method);
+    if (!config?.url || !config?.anonKey) {
+      if (status) status.textContent = label('报名服务暂时不可用，请稍后重试。', 'The application service is temporarily unavailable. Please try again later.');
+      return;
+    }
+    if (button) {
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+    }
+    const previousLabel = buttonLabel?.textContent;
+    if (buttonLabel) buttonLabel.textContent = label('正在安全提交…', 'Submitting securely…');
+    if (status) {
+      status.dataset.state = '';
+      status.textContent = '';
+    }
+    try {
+      const response = await fetch(`${config.url.replace(/\/+$/, '')}/functions/v1/enrollment-request`, {
+        method: 'POST',
+        headers: {
+          apikey: config.anonKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.ok !== true || result.saved !== true) throw new Error('Application was not saved');
+      if (status) {
+        status.dataset.state = 'success';
+        status.textContent = label('已收到报名资料。招生团队会尽快与您联系。', 'Application received. Our admissions team will contact you soon.');
+      }
+      formElement.reset();
+      if (formElement === form) {
+        savedChildValues = [];
+        renderChildren();
+      }
+    } catch {
+      if (status) {
+        status.dataset.state = 'error';
+        status.textContent = label('提交失败，资料还没有保存。请稍后重试，或直接邮件联系 Brighthive168@gmail.com。', 'Submission failed and your details were not saved. Please try again or email Brighthive168@gmail.com.');
+      }
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+      }
+      if (buttonLabel && previousLabel) buttonLabel.textContent = previousLabel;
+    }
   }
 
   form?.addEventListener('submit', event => {
@@ -169,46 +186,37 @@
       preferred_start: String(data.get('preferred_start') || 'Flexible'),
       message: String(data.get('message') || '').trim(),
       consent: data.get('consent') === 'on',
-      company_website: String(data.get('company_website') || '')
+      company_website: String(data.get('company_website') || ''),
+      application_type: 'after_school'
     };
-    const method = String(data.get('email_method') || 'default');
-    window.location.href = buildEmailDraft(payload, method);
+    void saveApplication(form, payload, 'enrollment-status');
   });
+
   artForm?.addEventListener('submit', event => {
     event.preventDefault();
     if (!artForm.reportValidity()) return;
     const data = new FormData(artForm);
-    const isTwoHours = String(data.get('session_length')) === 'two_hours';
-    const label = (zh, en) => language === 'en' ? en : zh;
-    const duration = isTwoHours ? label('2 小时', '2 hours') : label('1 小时', '1 hour');
-    const price = isTwoHours ? '$30 total' : '$20';
-    const savings = isTwoHours
-      ? label('相比两节一小时课（$40），省 $10（25%）；平均每小时 $15。', 'Save $10 (25%) versus two one-hour classes ($40); the average is $15 per hour.')
-      : label('一小时课程价格为 $20。', 'The one-hour class is $20.');
-    const subject = label('BrightHive 美术课程报名申请', 'BrightHive Art Class Registration');
-    const body = [
-      'BrightHive Academic Studio',
-      label('美术课程报名申请', 'Art class registration'),
-      '',
-      label('家长姓名', 'Parent / guardian name') + ': ' + String(data.get('parent_name') || '').trim(),
-      label('家长邮箱', 'Parent email') + ': ' + String(data.get('parent_email') || '').trim(),
-      label('联系电话', 'Phone number') + ': ' + String(data.get('parent_phone') || '').trim(),
-      label('学生姓名', 'Student name') + ': ' + String(data.get('student_name') || '').trim(),
-      label('年级', 'Grade') + ': ' + String(data.get('grade') || '').trim(),
-      label('课时', 'Class length') + ': ' + duration,
-      label('费用', 'Price') + ': ' + price,
-      label('优惠说明', 'Savings') + ': ' + savings,
-      label('希望上课日期', 'Preferred class date') + ': ' + String(data.get('preferred_date') || '').trim(),
-      label('方便上课时间', 'Preferred time') + ': ' + String(data.get('preferred_time') || label('待沟通', 'To be discussed')),
-      label('补充说明', 'Additional notes') + ': ' + (String(data.get('message') || '').trim() || '—')
-    ].join('\n');
-    const method = String(data.get('email_method') || 'default');
-    window.location.href = composeEmailDraft('Brighthive168@gmail.com', subject, body, method);
+    const sessionLength = String(data.get('session_length') || 'one_hour');
+    const payload = {
+      application_type: 'art',
+      parent_name: String(data.get('parent_name') || '').trim(),
+      parent_email: String(data.get('parent_email') || '').trim(),
+      parent_phone: String(data.get('parent_phone') || '').trim(),
+      number_of_children: 1,
+      children: [{
+        name: String(data.get('student_name') || '').trim(),
+        grade: String(data.get('grade') || '').trim(),
+        school: '',
+        dismissal_time: ''
+      }],
+      class_length: sessionLength,
+      preferred_date: String(data.get('preferred_date') || ''),
+      preferred_time: String(data.get('preferred_time') || ''),
+      message: String(data.get('message') || '').trim(),
+      consent: data.get('consent') === 'on',
+      company_website: String(data.get('company_website') || '')
+    };
+    void saveApplication(artForm, payload, 'art-registration-status');
   });
 
 })();
-
-
-
-
-

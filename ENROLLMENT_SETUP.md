@@ -1,24 +1,20 @@
-# BrightHive Academic Studio 报名网站与家长课后班中心
+# BrightHive enrollment submissions
 
-报名网站已作为独立静态站点放在 `enrollment-site/`，首页为 `enrollment-site/index.html`。家长课后班中心仍由项目根目录 `index.html` 提供。两者可在同一个本地服务中分别访问：
+The after-school and art application forms submit directly to the Supabase Edge Function `enrollment-request`. The function saves every valid application in the private `public.enrollment_inquiries` table before trying to send an email notification. The hidden `Website` field is a honeypot; values submitted into it are discarded.
 
-- 家长课后班中心：`http://127.0.0.1:7892/index.html`
-- 报名网站：`http://127.0.0.1:7892/enrollment-site/`
+## Deploy the database and function
 
-报名表通过 Supabase Edge Function `enrollment-request` 调用 Resend，将报名咨询发送到 `Brighthive168@gmail.com`。网站源码只包含 Supabase publishable key；Resend API key 只存于 Supabase Secrets。报名表本身不写入 Supabase 数据库。
+1. In Supabase Dashboard, open **SQL Editor** for project `hkbkkuwtcyvsmzvkfyeq` and run `supabase-enrollment-inquiries-migration.sql` from this folder. The table is private to the service role for writes; authenticated staff can read it through the staff policy.
+2. In **Edge Functions**, create or open `enrollment-request` and deploy `supabase/functions/enrollment-request/index.ts`. Keep `verify_jwt = false`; the function validates the origin, fields, and consent itself.
+3. Confirm the table appears in **Table Editor → public → enrollment_inquiries**. A real form submission should create a row even when email notification is not configured.
 
-## 启用自动邮件
+## Email notifications
 
-启用需要一个 Resend API key、一个已经在 Resend 验证的发件邮箱/域名，以及 Supabase 项目访问权限。请不要把 API key 发到聊天或放到网页文件。
+The Supabase project currently has no custom Edge Function secrets. To receive an email notification for each saved request, first verify a sender address/domain in Resend, then add these values in **Edge Functions → Secrets**:
 
-1. 在 Resend 验证你拥有的发件域名/邮箱并生成 API key。
-2. 在 Supabase 项目 `hkbkkuwtcyvsmzvkfyeq` 的 **Edge Functions → Secrets** 中添加：
-   - `RESEND_API_KEY`：Resend API key。
-   - `RESEND_FROM_EMAIL`：该已验证域名下的发件人，例如 `BrightHive Academic Studio Admissions <admissions@your-verified-domain.com>`（替换为你实际验证的地址）。
-   - `ALLOWED_ORIGINS`：网站来源；本地预览可填写 `http://127.0.0.1:7892`，正式部署后再加正式网站的 HTTPS 来源。
-3. 部署 `supabase/functions/enrollment-request/index.ts` 到 Supabase 项目，函数名为 `enrollment-request`，并保持 `verify_jwt = false`（此公开报名表使用函数自身的来源检查、字段校验和 honeypot；不要把 service role key放进客户端）。
-4. 从报名网站提交一条真实可识别为测试的信息，确认 `Brighthive168@gmail.com` 收到邮件，并核实回复地址指向表单填写的家长邮箱。
+- `RESEND_API_KEY`: the Resend API key.
+- `RESEND_FROM_EMAIL`: a sender address verified by Resend, such as `BrightHive Admissions <admissions@your-verified-domain.com>`.
 
-本环境目前没有检测到 Supabase CLI，也没有可用的 Resend 发件密钥/已验证发件邮箱，因此代码、目标邮箱和独立页面已准备好，但邮件发送要等上述 Secrets 配置并部署函数后才会实际启用。密钥由你直接在 Supabase Dashboard 的 Secrets 输入框中粘贴；配置后可再完成函数部署和端到端测试。
+The site never contains the Resend key. Missing email secrets do not block saving a family application; the record remains in Supabase with `notification_status = 'not_configured'`. Delivery failures are recorded as `failed`, and successful messages are marked `sent`.
 
-
+Do not put service-role keys, Resend keys, or other private credentials in website files or chat.

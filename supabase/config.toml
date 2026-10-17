@@ -1,0 +1,4 @@
+project_id = "hkbkkuwtcyvsmzvkfyeq"
+
+[functions.enrollment-request]
+verify_jwt = false

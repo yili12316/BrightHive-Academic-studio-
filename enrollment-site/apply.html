@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#17324f">
   <title data-zh="报名申请 | BrightHive Academic Studio Eastvale" data-en="Enrollment Application | BrightHive Academic Studio Eastvale">Enrollment Application | BrightHive Academic Studio Eastvale</title>
   <link rel="icon" href="../brighthive-logo.png?v=1">
-  <link rel="stylesheet" href="enrollment.css?v=20261015-rounded-3d">
+  <link rel="stylesheet" href="enrollment.css?v=20261017-direct-submit">
 </head>
 <body class="apply-page">
   <div class="utility-bar"><span data-zh="仅服务美国 Eastvale 地区" data-en="Serving Eastvale, USA only">仅服务美国 Eastvale 地区</span><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a></div>
@@ -41,16 +41,16 @@
       <div class="children-container" id="children-container" aria-live="polite"></div>
       <div class="form-grid"><label class="full-field"><span data-zh="补充说明（选填）" data-en="Additional information (optional)">补充说明（选填）</span><textarea name="message" maxlength="1200" rows="5" data-ph-zh="可填写家庭学习需求或方便联系的时间。" data-ph-en="Share family learning needs or a convenient time to reach you."></textarea></label></div>
       <label class="consent-field"><input type="checkbox" name="consent" required><span data-zh="我同意 BrightHive Academic Studio 为回复本次报名申请，使用我填写的联系信息与学习需求。" data-en="I agree that BrightHive Academic Studio may use my contact details and learning information to respond to this enquiry.">我同意 BrightHive Academic Studio 为回复本次报名申请，使用我填写的联系信息与学习需求。</span></label>
-      <label class="website-field" aria-hidden="true">Website<input name="company_website" tabindex="-1" autocomplete="off"></label>
-      <label class="email-method-field"><span data-zh="选择打开邮箱的方式" data-en="Choose how to open your email">选择打开邮箱的方式</span><select name="email_method"><option value="default" data-zh="设备默认邮件程序" data-en="Default email app">设备默认邮件程序</option><option value="gmail">Gmail</option><option value="outlook">Outlook</option></select></label>
-      <button class="button button-primary submit-button" type="submit"><span data-zh="在邮箱中提交报名" data-en="Continue to email">在邮箱中提交报名</span><b aria-hidden="true">↗</b></button>
-      <small class="form-footnote" data-zh="点击后会打开邮件草稿，请在邮件中点击“发送”完成报名。" data-en="This opens a prefilled email draft. Click Send in your email app to complete your enquiry.">点击后会打开邮件草稿，请在邮件中点击“发送”完成报名。</small>
+      <label class="website-field" aria-hidden="true" hidden>Website<input name="company_website" tabindex="-1" autocomplete="off"></label>
+      <p class="form-status" id="enrollment-status" role="status" aria-live="polite"></p>
+      <button class="button button-primary submit-button" type="submit"><span data-zh="提交报名申请" data-en="Submit application">提交报名申请</span><b aria-hidden="true">↗</b></button>
+      <small class="form-footnote" data-zh="提交后，报名资料会安全保存，招生团队将与您联系。" data-en="Your application is saved securely. Our admissions team will follow up.">提交后，报名资料会安全保存，招生团队将与您联系。</small>
     </form>
   </main>
-  <footer class="site-footer"><a class="footer-brand" href="index.html"><img src="../brighthive-logo.png?v=1" alt=""><span>BrightHive Academic Studio</span></a><span data-zh="美国 Eastvale 地区课后学术学习" data-en="After-school academic learning in Eastvale, USA">After-school academic learning in Eastvale, USA</span><div><a href="privacy.html" data-zh="隐私政策" data-en="Privacy">Privacy</a><a href="terms.html" data-zh="使用条款" data-en="Terms">Terms</a><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a><a class="family-score-access" href="../family-portal/index.html#progress" aria-label="Family score portal sign-in" data-aria-label-zh="家长成绩登录入口" data-aria-label-en="Family score portal sign-in" title="Email" data-title-zh="邮箱" data-title-en="Email" data-zh="邮箱" data-en="Email">Email</a></div></footer>
+  <footer class="site-footer"><a class="footer-brand" href="index.html"><img src="../brighthive-logo.png?v=1" alt=""><span>BrightHive Academic Studio</span></a><span data-zh="美国 Eastvale 地区课后学术学习" data-en="After-school academic learning in Eastvale, USA">After-school academic learning in Eastvale, USA</span><div><a href="privacy.html" data-zh="隐私政策" data-en="Privacy">Privacy</a><a href="terms.html" data-zh="使用条款" data-en="Terms">Terms</a><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a><a class="family-score-access" href="mailto:Brighthive168@gmail.com" aria-label="Email BrightHive" data-aria-label-zh="给 BrightHive 发邮件" data-aria-label-en="Email BrightHive" title="Email" data-title-zh="邮箱" data-title-en="Email" data-zh="邮箱" data-en="Email">Email</a></div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js"></script>
-  <script src="enrollment.js?v=20261015-no-registered-redirect"></script>
+  <script src="enrollment.js?v=20261017-direct-submit"></script>
 </body>
 </html>
 
