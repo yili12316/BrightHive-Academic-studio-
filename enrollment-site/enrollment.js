@@ -210,8 +210,6 @@
         dismissal_time: ''
       }],
       class_length: sessionLength,
-      preferred_date: String(data.get('preferred_date') || ''),
-      preferred_time: String(data.get('preferred_time') || ''),
       message: String(data.get('message') || '').trim(),
       consent: data.get('consent') === 'on',
       company_website: String(data.get('company_website') || '')

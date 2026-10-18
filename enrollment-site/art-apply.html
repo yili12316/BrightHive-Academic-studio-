@@ -35,8 +35,6 @@
         <label><span data-zh="学生姓名 *" data-en="Student name *">学生姓名 *</span><input name="student_name" autocomplete="off" maxlength="80" required data-ph-zh="请输入学生姓名" data-ph-en="Enter student name"></label>
         <label><span data-zh="年龄组 *" data-en="Age group *">年龄组 *</span><select name="grade" required><option value="" selected disabled data-zh="请选择年龄组" data-en="Select age group">请选择年龄组</option><option value="Ages 6–15" data-zh="6–15 岁" data-en="Ages 6–15">6–15 岁</option><option value="Adult" data-zh="成人" data-en="Adult">成人</option></select></label>
         <label><span data-zh="选择美术课时 *" data-en="Choose class length *">选择美术课时 *</span><select name="session_length" required><option value="one_hour" selected data-zh="1 小时 · $20" data-en="1 hour · $20">1 小时 · $20</option><option value="two_hours" data-zh="2 小时 · $30 总价" data-en="2 hours · $30 total">2 小时 · $30 总价</option></select></label>
-        <label><span data-zh="希望上课日期 *" data-en="Preferred class date *">希望上课日期 *</span><input name="preferred_date" type="date" required></label>
-        <label><span data-zh="方便上课时间（选填）" data-en="Preferred time (optional)">方便上课时间（选填）</span><input name="preferred_time" type="time"></label>
         <label class="full-field"><span data-zh="补充说明（选填）" data-en="Additional notes (optional)">补充说明（选填）</span><textarea name="message" maxlength="1200" rows="4" data-ph-zh="可填写孩子的美术兴趣或其他需要沟通的内容。" data-ph-en="Share your child’s art interests or any other details."></textarea></label>
       </div>
       <p class="art-form-note" data-zh="两小时课程总价 $30。相比两节一小时课（$40），省 $10（25%）；平均每小时 $15。" data-en="Two-hour class: $30 total. Save $10 (25%) versus two one-hour classes ($40); the average is $15 per hour.">两小时课程总价 $30。相比两节一小时课（$40），省 $10（25%）；平均每小时 $15。</p>
@@ -50,6 +48,6 @@
   <footer class="site-footer"><a class="footer-brand" href="index.html"><img src="../brighthive-logo.png?v=1" alt=""><span>BrightHive Academic Studio</span></a><span data-zh="美国 Eastvale 地区美术课程" data-en="Art classes in Eastvale, USA">美国 Eastvale 地区美术课程</span><div><a href="privacy.html" data-zh="隐私政策" data-en="Privacy">隐私政策</a><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a></div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../supabase-config.js"></script>
-  <script src="enrollment.js?v=20261017-direct-submit"></script>
+  <script src="enrollment.js?v=20261017-art-no-date"></script>
 </body>
 </html>
