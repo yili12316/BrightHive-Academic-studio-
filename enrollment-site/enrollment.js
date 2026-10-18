@@ -196,7 +196,8 @@
     event.preventDefault();
     if (!artForm.reportValidity()) return;
     const data = new FormData(artForm);
-    const sessionLength = String(data.get('session_length') || 'one_hour');
+    const selectedProgram = artForm.querySelector('[name="session_length"]')?.selectedOptions?.[0];
+    const sessionLength = String(selectedProgram?.dataset.program || '');
     const payload = {
       application_type: 'art',
       parent_name: String(data.get('parent_name') || '').trim(),
@@ -205,7 +206,7 @@
       number_of_children: 1,
       children: [{
         name: String(data.get('student_name') || '').trim(),
-        grade: String(data.get('grade') || '').trim(),
+        grade: String(selectedProgram?.dataset.age || '').trim(),
         school: '',
         dismissal_time: ''
       }],
@@ -218,3 +219,4 @@
   });
 
 })();
+

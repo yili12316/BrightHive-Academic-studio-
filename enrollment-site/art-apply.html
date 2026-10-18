@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#e8f6fc">
   <title data-zh="美术课程报名 | BrightHive Academic Studio" data-en="Art Class Registration | BrightHive Academic Studio">Art Class Registration | BrightHive Academic Studio</title>
   <link rel="icon" href="../brighthive-logo.png?v=1">
-  <link rel="stylesheet" href="enrollment.css?v=20261017-direct-submit">
+  <link rel="stylesheet" href="enrollment.css?v=20261017-mobile-fit">
 </head>
 <body class="apply-page">
   <div class="utility-bar"><span data-zh="美术课程 · 美国 Eastvale" data-en="Art classes · Eastvale, USA">美术课程 · 美国 Eastvale</span><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a></div>
@@ -20,8 +20,9 @@
   <main class="apply-main art-apply-main">
     <section class="apply-intro"><p class="eyebrow"><span></span><b data-zh="独立美术课程 · EASTVALE" data-en="STANDALONE ART CLASSES · EASTVALE">独立美术课程 · EASTVALE</b></p><h1 data-zh="美术课程报名" data-en="Art class registration">美术课程报名</h1><p data-zh="填写家长和学生信息并选择课时。提交后，报名资料会安全保存，招生团队将与您联系确认安排。" data-en="Share parent and student details and choose a class length. Your application will be saved securely when submitted, and our admissions team will follow up.">填写家长和学生信息并选择课时。提交后会打开您选择的邮箱并填好报名邮件；请检查邮件后点击发送，完成报名。</p></section>
     <section class="art-session-summary" aria-label="美术课程价格 / Art class pricing">
-      <article class="art-price-card art-one-hour"><span class="art-price-kicker" data-zh="一小时课程" data-en="ONE-HOUR CLASS">一小时课程</span><h3 data-zh="1 小时" data-en="1 hour">1 小时</h3><p class="art-price"><strong>$20</strong><span data-zh="/ 次 · 1 小时" data-en="/ class · 1 hour">/ 次 · 1 小时</span></p></article>
-      <article class="art-price-card art-two-hour"><span class="art-price-kicker" data-zh="两小时课程 · 优惠价" data-en="TWO-HOUR CLASS · SAVINGS">两小时课程 · 优惠价</span><h3 data-zh="2 小时" data-en="2 hours">2 小时</h3><p class="art-price"><strong>$30</strong><span data-zh="总价 · 2 小时" data-en="total · 2 hours">总价 · 2 hours</span></p><p class="art-savings" data-zh="相比两节一小时课（$40），省 $10（25%）；平均每小时 $15，比一小时课每小时少 $5（25%）。" data-en="Save $10 (25%) versus two one-hour classes ($40). At $15 per hour, it is $5 less per hour (25%) than the one-hour class.">相比两节一小时课（$40），省 $10（25%）；平均每小时 $15，比一小时课每小时少 $5（25%）。</p></article>
+      <article class="art-price-card art-one-hour"><span class="art-price-kicker" data-zh="儿童班 · 6–11 岁" data-en="CHILDREN · AGES 6–11">儿童班 · 6–11 岁</span><h3 data-zh="儿童绘画手工制作课" data-en="Children’s Art & Crafts">儿童绘画手工制作课</h3><p class="art-price"><strong>$30</strong><span data-zh="/ 次 · 2 小时" data-en="/ class · 2 hours">/ 次 · 2 小时</span></p></article>
+      <article class="art-price-card art-two-hour"><span class="art-price-kicker" data-zh="青少年班 · 12 岁以上" data-en="TEENS · AGES 12+">青少年班 · 12 岁以上</span><h3 data-zh="青少年专业绘画课" data-en="Teen Professional Drawing">青少年专业绘画课</h3><p class="art-price"><strong>$70</strong><span data-zh="/ 次 · 3 小时" data-en="/ class · 3 hours">/ 次 · 3 小时</span></p></article>
+      <article class="art-price-card art-adult"><span class="art-price-kicker" data-zh="成人课程" data-en="ADULT CLASS">成人课程</span><h3 data-zh="成人油画课" data-en="Adult Oil Painting">成人油画课</h3><p class="art-price"><strong>$80</strong><span data-zh="/ 次 · 2 小时" data-en="/ class · 2 hours">/ 次 · 2 小时</span></p></article>
     </section>
     <form class="enrollment-form apply-form" id="art-registration-form">
       <div class="form-heading"><span data-zh="01 — 家长联系信息" data-en="01 — PARENT / GUARDIAN">01 — 家长联系信息</span><small data-zh="必填项以 * 标记" data-en="Required fields are marked *">必填项以 * 标记</small></div>
@@ -33,17 +34,17 @@
       <div class="form-heading section-divider"><span data-zh="02 — 学生与课程信息" data-en="02 — STUDENT AND CLASS DETAILS">02 — 学生与课程信息</span><small data-zh="每次报名填写一位学生" data-en="One student per registration">每次报名填写一位学生</small></div>
       <div class="form-grid">
         <label><span data-zh="学生姓名 *" data-en="Student name *">学生姓名 *</span><input name="student_name" autocomplete="off" maxlength="80" required data-ph-zh="请输入学生姓名" data-ph-en="Enter student name"></label>
-        <label><span data-zh="年龄组 *" data-en="Age group *">年龄组 *</span><select name="grade" required><option value="" selected disabled data-zh="请选择年龄组" data-en="Select age group">请选择年龄组</option><option value="Ages 6–15" data-zh="6–15 岁" data-en="Ages 6–15">6–15 岁</option><option value="Adult" data-zh="成人" data-en="Adult">成人</option></select></label>
-        <label><span data-zh="选择美术课时 *" data-en="Choose class length *">选择美术课时 *</span><select name="session_length" required><option value="one_hour" selected data-zh="1 小时 · $20" data-en="1 hour · $20">1 小时 · $20</option><option value="two_hours" data-zh="2 小时 · $30 总价" data-en="2 hours · $30 total">2 小时 · $30 总价</option></select></label>
+        <label class="full-field"><span data-zh="选择课程 *" data-en="Choose a program *">选择课程 *</span><select name="session_length" required><option value="" selected disabled data-zh="请选择适合的课程" data-en="Select a program">请选择适合的课程</option><option value="children_art_crafts_2h_30" data-age="Ages 6–11" data-program="Children’s art and crafts — ages 6–11, 2 hours, $30" data-zh="儿童绘画手工制作课 · 6–11 岁 · 2 小时 · $30" data-en="Children’s art & crafts · ages 6–11 · 2 hours · $30">儿童绘画手工制作课 · 6–11 岁 · 2 小时 · $30</option><option value="teen_professional_drawing_3h_70" data-age="Ages 12+" data-program="Teen professional drawing — ages 12+, 3 hours, $70" data-zh="青少年专业绘画课 · 12 岁以上 · 3 小时 · $70" data-en="Teen professional drawing · ages 12+ · 3 hours · $70">青少年专业绘画课 · 12 岁以上 · 3 小时 · $70</option><option value="adult_oil_painting_2h_80" data-age="Adult" data-program="Adult oil painting — 2 hours, $80" data-zh="成人油画课 · 2 小时 · $80" data-en="Adult oil painting · 2 hours · $80">成人油画课 · 2 小时 · $80</option></select></label>
         <label class="full-field"><span data-zh="补充说明（选填）" data-en="Additional notes (optional)">补充说明（选填）</span><textarea name="message" maxlength="1200" rows="4" data-ph-zh="可填写孩子的美术兴趣或其他需要沟通的内容。" data-ph-en="Share your child’s art interests or any other details."></textarea></label>
       </div>
-      <p class="art-form-note" data-zh="两小时课程总价 $30。相比两节一小时课（$40），省 $10（25%）；平均每小时 $15。" data-en="Two-hour class: $30 total. Save $10 (25%) versus two one-hour classes ($40); the average is $15 per hour.">两小时课程总价 $30。相比两节一小时课（$40），省 $10（25%）；平均每小时 $15。</p>
+      <p class="art-form-note" data-zh="儿童和青少年班每年参加 6–8 场加州及全美美术比赛。" data-en="Children and teen students participate in 6–8 California and national art competitions each year.">儿童和青少年班每年参加 6–8 场加州及全美美术比赛。</p>
       <label class="consent-field"><input type="checkbox" name="consent" required><span data-zh="我同意 BrightHive Academic Studio 为回复本次美术课程报名，使用我填写的联系信息。" data-en="I agree that BrightHive Academic Studio may use my contact details to respond to this art class registration.">我同意 BrightHive Academic Studio 为回复本次美术课程报名，使用我填写的联系信息。</span></label>
       <label class="website-field" aria-hidden="true" hidden>Website<input name="company_website" tabindex="-1" autocomplete="off"></label>
       <p class="form-status" id="art-registration-status" role="status" aria-live="polite"></p>
       <button class="button button-primary submit-button" type="submit"><span data-zh="提交美术报名" data-en="Submit art registration">提交美术报名</span><b aria-hidden="true">↗</b></button>
       <small class="form-footnote" data-zh="提交后，报名资料会安全保存，招生团队将与您联系。" data-en="Your registration is saved securely. Our admissions team will follow up.">提交后，报名资料会安全保存，招生团队将与您联系。</small>
     </form>
+    <aside class="art-apply-phone" aria-label="美术课程电话咨询 / Art class phone enquiries"><span data-zh="电话咨询美术课程" data-en="CALL ABOUT ART CLASSES">电话咨询美术课程</span><div><a href="tel:+19099936666">909-993-6666</a></div></aside>
   </main>
   <footer class="site-footer"><a class="footer-brand" href="index.html"><img src="../brighthive-logo.png?v=1" alt=""><span>BrightHive Academic Studio</span></a><span data-zh="美国 Eastvale 地区美术课程" data-en="Art classes in Eastvale, USA">美国 Eastvale 地区美术课程</span><div><a href="privacy.html" data-zh="隐私政策" data-en="Privacy">隐私政策</a><a href="mailto:Brighthive168@gmail.com">Brighthive168@gmail.com</a></div></footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -51,3 +52,4 @@
   <script src="enrollment.js?v=20261017-art-no-date"></script>
 </body>
 </html>
+
