@@ -68,7 +68,7 @@ function ensureDriftWall() {
   driftPlane.innerHTML = Array.from({ length: 5 }, (_, column) => {
     const speed = [40, 49, 36, 46, 42][column];
     const delay = [3, 18, 10, 26, 7][column];
-    const tiles = Array.from({ length: 10 }, () => '<span class="drift-tile"><img src="../brighthive-logo.png?v=1" alt="" decoding="async" fetchpriority="low"></span>').join('');
+    const tiles = Array.from({ length: 10 }, () => '<span class="drift-tile"><img src="../brighthive-logo.jpg?v=1" alt="" decoding="async" fetchpriority="low"></span>').join('');
     return `<div class="drift-column" style="--speed:${speed}s;--delay:${delay}s">${tiles}</div>`;
   }).join('');
 }
